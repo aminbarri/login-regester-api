@@ -18,16 +18,20 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
-
+    
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
+            'password' => Hash::make($validated['password']),
         ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['token' => $token, 'user' => $user]);
+    
+        // Send email verification notification
+        $user->sendEmailVerificationNotification();
+    
+        return response()->json([
+            'message' => 'User registered successfully. Please check your email to verify your account.',
+            'user' => $user,
+        ], 201);
     }
 
     public function login(Request $request)

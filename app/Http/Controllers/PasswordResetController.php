@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 class PasswordResetController extends Controller
 {
+     
     public function forgotPassword(Request $request)
 {
     $request->validate(['email' => 'required|email']);
