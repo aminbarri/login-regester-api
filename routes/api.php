@@ -20,17 +20,16 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('auth:sanctum');
 
-Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword']);
-Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->middleware('guest');
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->middleware('guest');
 
 
-// Verify Email
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     return redirect('http://localhost:3000/login?verified=true');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-// Resend Verification Email
+
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return response()->json(['message' => 'Verification email resent.']);
